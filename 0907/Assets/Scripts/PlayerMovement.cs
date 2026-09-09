@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    
     [SerializeField] private float _moveSpeed;
+    [SerializeField] private float _jumpSpeed;
     [SerializeField] private Transform _cameraPivot;
     [SerializeField] private float _mouseSensitivity;
     [SerializeField] private float _minPitch;
@@ -33,6 +35,11 @@ public class PlayerMovement : MonoBehaviour
         _pitch = Mathf.Clamp(_pitch + input.x, _minPitch, _maxPitch);
 
         _cameraPivot.localRotation = Quaternion.Euler(_pitch, 0, 0);
+    }    
+
+    public void Jump()
+    {
+        _rigidbody.AddForce(Vector3.up * _jumpSpeed, ForceMode.Impulse);
     }
 
     public void Move()

@@ -11,9 +11,12 @@ public class PlayerController : MonoBehaviour, IInteractor
     [SerializeField] private float _detectionRange;
     [SerializeField] private KeyCode _interactionKey = KeyCode.E;
     [SerializeField] private KeyCode _grenadeKey = KeyCode.Alpha3;
+    [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
     [SerializeField] private GrenadeController _grenadePrefab;
     [SerializeField] private int _grenade_num;
-    [SerializeField] private Vector3 _grenadePos;
+    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] private float _groundDistance;
+
 
     private GameObject _grenadeShape;
     private PlayerWeapon _weapon;    
@@ -25,6 +28,8 @@ public class PlayerController : MonoBehaviour, IInteractor
     private bool _hasDetectInteractable => _targetInteractable != null;
     private bool _isPressdInteractionKey => Input.GetKeyDown(_interactionKey);
     private bool _canInteraction => _hasDetectInteractable && _isPressdInteractionKey;
+    private bool _isJump = false;
+
 
     public GameObject GameObject
     {
@@ -33,12 +38,14 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     private void Awake() => CacheComponents();
     private void Start() => LockCursor();
-    private void FixedUpdate() => _movement.Move();
+    private void FixedUpdate() => _movement.Move();   
     private void Update()
     {        
         _movement.Rotate();
         _weapon.Fire();
-        _weapon.Reload();        
+        _weapon.Reload();
+        IsJump();
+        Jump();
         DetectInteractable();
         TryInteract();
         SpawnGrenade();
@@ -47,6 +54,32 @@ public class PlayerController : MonoBehaviour, IInteractor
     {        
         SetCameraTransform();
         SetWeaponTransform();        
+    }
+
+    private void IsJump()
+    {
+        Ray ray = new Ray(transform.position, Vector3.down);
+        Debug.DrawLine(transform.position, Vector3.down * _groundDistance, Color.red);
+        //RaycastHit hit;
+
+        //if(Physics.Raycast(ray, out hit, _groundDistance, _groundLayer))
+        //{
+        //    if(_groundLayer.Contains(hit.collider))
+        //    {
+        //        _isJump = false;
+        //    }
+
+        //    _isJump = true;
+        //}
+    }
+
+    private void Jump()
+    {
+        if(!Input.GetKeyDown(_jumpKey) || _isJump)
+        {
+            return;
+        }
+        _movement.Jump();
     }
 
     private void SpawnGrenade()

@@ -115,7 +115,7 @@ public class TurretScript : MonoBehaviour
         RaycastHit hit;
 
         if(Physics.Raycast(ray, out hit, _sphereCollider.radius))
-        {
+        {            
             if (TargetLayer.Contains(hit.collider))
             {
                 _isPlayerInSight = true;
