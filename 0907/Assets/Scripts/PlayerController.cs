@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     private bool _hasDetectInteractable => _targetInteractable != null;
     private bool _isPressdInteractionKey => Input.GetKeyDown(_interactionKey);
     private bool _canInteraction => _hasDetectInteractable && _isPressdInteractionKey;
-    private bool _isJump = false;
+    [SerializeField] private bool _isJump = false;
 
 
     public GameObject GameObject
@@ -38,12 +38,12 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     private void Awake() => CacheComponents();
     private void Start() => LockCursor();
-    private void FixedUpdate() => _movement.Move();   
+    private void FixedUpdate() => Move();   
     private void Update()
     {        
         _movement.Rotate();
         _weapon.Fire();
-        _weapon.Reload();
+        _weapon.Reload();        
         IsJump();
         Jump();
         DetectInteractable();
@@ -58,19 +58,27 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     private void IsJump()
     {
-        Ray ray = new Ray(transform.position, Vector3.down);
-        Debug.DrawLine(transform.position, Vector3.down * _groundDistance, Color.red);
-        //RaycastHit hit;
+        Ray ray = new Ray(transform.position+(transform.up*0.2f), Vector3.down);
+        Debug.DrawRay(transform.position + (transform.up * 0.2f), Vector3.down * _groundDistance, Color.red);
+        RaycastHit hit;
 
-        //if(Physics.Raycast(ray, out hit, _groundDistance, _groundLayer))
-        //{
-        //    if(_groundLayer.Contains(hit.collider))
-        //    {
-        //        _isJump = false;
-        //    }
+        if (Physics.Raycast(ray, out hit, _groundDistance, _groundLayer))
+        {            
+            _isJump = false;                     
+        }
+        else
+        {
+            _isJump = true;
+        }
+    }
 
-        //    _isJump = true;
-        //}
+    private void Move()
+    {
+        if (_isJump)
+        {
+            return;
+        }
+        _movement.Move();
     }
 
     private void Jump()
