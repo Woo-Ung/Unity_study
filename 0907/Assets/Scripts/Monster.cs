@@ -24,5 +24,5 @@ public class Monster : MonoBehaviour, IDamageable
     {
         _hp = MAX_HP;
         gameObject.layer = 7;
-    }
+    }        
 }

@@ -98,7 +98,6 @@ public class PlayerMovement : MonoBehaviour
 
         return new Vector3(x, 0, z).normalized;
     }
-
     private void CacheComponents()
     {
         _rigidbody = GetComponent<Rigidbody>();

@@ -53,12 +53,4 @@ public class GrenadeController : MonoBehaviour
             }
         }
     }
-
-    // 1. 터질때 수류탄과 별개로 효과 프리팹을 Spawn 시키던가.
-    // 2. 터진다' 라는 행동을 다르게 가져간다
-    //    - 눈에 안보이도록 처리
-    //    - 효과 활성화
-    //    - n초 뒤에 파괴
-
-
 }

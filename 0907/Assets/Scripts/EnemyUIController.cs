@@ -8,7 +8,7 @@ public class EnemyUIController : MonoBehaviour
 {    
     [SerializeField] private Canvas _hpBar;
     [SerializeField] private float _hpYPosition;
-    [SerializeField] private Transform _playerTransform;
+    private Transform _playerTransform;
     private Canvas hpBar;
     private Monster _state;
 
@@ -22,13 +22,14 @@ public class EnemyUIController : MonoBehaviour
     {        
         hpBar.transform.position = new Vector3(transform.position.x, transform.position.y + _hpYPosition, transform.position.z);
         Vector3 look = new Vector3(_playerTransform.position.x, _playerTransform.position.y, _playerTransform.position.z);
-        transform.LookAt(look);
+        hpBar.transform.LookAt(look);
         Image[] redbar = hpBar.GetComponentsInChildren<Image>();
         redbar[1].fillAmount = ((float)_state._hp / (float)_state.MAX_HP);
     }
     
     private void CacheComponents()
     {
+        _playerTransform = GameObject.Find("Player").transform;
         hpBar =  Instantiate(_hpBar, gameObject.transform);
         _state = GetComponent<Monster>();
     }    

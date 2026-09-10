@@ -14,18 +14,18 @@ public class PlayerController : MonoBehaviour, IInteractor
     [SerializeField] private KeyCode _grenadeKey = KeyCode.Alpha3;
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
     [SerializeField] private GrenadeController _grenadePrefab;
-    [SerializeField] private int _grenade_num;
+    [field: SerializeField] public int _grenade_MaxNum { get; protected set; }
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _groundDistance;
-
 
     private GameObject _grenadeShape;
     private PlayerWeapon _weapon;    
     private PlayerMovement _movement;
     private Transform _cameraTransform;
     private PlayerUIController _playerUI;
-    private float _grenadeTime;
-    
+    private float _grenadeTime;    
+    public int _grenade_num { get; protected set; }
+
     private IInteractable _targetInteractable;
     private IDamageable _targetDamageable;
     private bool _hasDetectInteractable => _targetInteractable != null;
@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         _grenadeTime = 1f;
         _grenadeShape = _grenadeSpawn.Find("GrenadeShape").gameObject;
         _grenadeShape.SetActive(false);
-        _grenade_num = 3;
+        _grenade_num = _grenade_MaxNum;
     }
 
     private void LockCursor()
@@ -140,45 +140,6 @@ public class PlayerController : MonoBehaviour, IInteractor
         _cameraTransform.SetPositionAndRotation(_cameraPivot.position, _cameraPivot.rotation);
     }
 
-    //public void DetectDamagerable()
-    //{
-    //    Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
-    //    RaycastHit hit;
-
-    //    if(!Physics.Raycast(ray, out hit, _detectionRange))
-    //    {
-    //        if(_hasDetectDamageable)
-    //        {                
-    //            _playerUI._scope2.gameObject.SetActive(false);
-    //            _playerUI._scope1.gameObject.SetActive(true);
-    //            _targetDamageable = null;
-    //        }
-    //        return;
-    //    }
-
-    //    if (_hasDetectDamageable)
-    //    {
-    //        if (hit.collider.gameObject == _targetDamageable.GameObject)
-    //        {
-    //            return;
-    //        }
-    //    }
-
-    //    if (hit.collider.TryGetComponent<IDamageable>(out IDamageable enemy))
-    //    {
-    //        _playerUI._scope2.gameObject.SetActive(false);
-    //        _playerUI._scope1.gameObject.SetActive(true);
-    //    }
-
-    //    _targetDamageable = hit.collider.GetComponent<IDamageable>();
-
-    //    if (hit.collider.TryGetComponent<IDamageable>(out enemy))
-    //    {
-    //        _playerUI._scope2.gameObject.SetActive(true);
-    //        _playerUI._scope1.gameObject.SetActive(false);
-    //    }
-    //}
-        
     public void DetectInteractable()
     {
         Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
@@ -191,7 +152,7 @@ public class PlayerController : MonoBehaviour, IInteractor
                 _targetInteractable.Untargeting();
                 _targetInteractable = null;
             }
-
+                        
             else if (_hasDetectDamageable)
             {
                 _playerUI._scope2.gameObject.SetActive(false);
@@ -209,7 +170,7 @@ public class PlayerController : MonoBehaviour, IInteractor
                 return; // 같은 Interactable을 계속 주시하고 있는 경우
             }
         }
-
+        
         else if (_hasDetectDamageable)
         {
             if (hit.collider.gameObject == _targetDamageable.GameObject)
@@ -221,8 +182,9 @@ public class PlayerController : MonoBehaviour, IInteractor
         _targetInteractable?.Untargeting();
         _targetInteractable = hit.collider.GetComponent<IInteractable>();
 
-        _targetInteractable?.Targeting(); // ?를 붙이면 if문 효과
+        _targetInteractable?.Targeting(); // ?를 붙이면 if문 효과 null이면 null반환 아니면 .실행
               
+        
         _targetDamageable = hit.collider.GetComponent<IDamageable>();
 
         if (_targetDamageable == null)

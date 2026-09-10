@@ -8,6 +8,7 @@ public class TurretScript : MonoBehaviour
     [SerializeField] private float _cooldown;
     [SerializeField] private Transform _headTransform;
     [SerializeField] private Transform _muzzlePoint;
+    [SerializeField] private FlameEffect _boomEffect;
 
     [Header("Bullet")]
     [SerializeField] private BulletController _bulletPrefab;
@@ -26,24 +27,7 @@ public class TurretScript : MonoBehaviour
 
     //--엔진 매서드
     private void Awake() => CacheComponents();
-    
-    private void OnTriggerEnter(Collider other)
-    {        
-        if (TargetLayer.Contains(other))
-        {
-            _playerTransform = other.transform;            
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (TargetLayer.Contains(other))
-        {
-            _playerTransform = null;
-        }
-    }
-
-    private void Update()
+        private void Update()
     {
         UpdateCurrentCooldown();
         RayShotToPlayer();
@@ -51,9 +35,14 @@ public class TurretScript : MonoBehaviour
         Fire();
     }
 
+    public void playerTransform(Transform playerTransform)
+    {
+        _playerTransform = playerTransform;
+    }
+
     private void CacheComponents()
     {
-        _sphereCollider = GetComponent<SphereCollider>();
+        _sphereCollider = GetComponentInChildren<SphereCollider>();
     }
 
     private void UpdateCurrentCooldown()
@@ -126,5 +115,9 @@ public class TurretScript : MonoBehaviour
         {
             _isPlayerInSight = false;
         }
-    }         
+    }
+    private void OnDestroy()
+    {
+        FlameEffect boom = Instantiate(_boomEffect, transform.position, _boomEffect.transform.rotation);
+    }
 }
