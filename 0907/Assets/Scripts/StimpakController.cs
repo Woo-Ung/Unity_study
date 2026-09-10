@@ -41,6 +41,8 @@ public class StimpakController : MonoBehaviour, IInteractable
         
         player.GetComponent<PlayerMovement>().SetMoveSpeed(_upSpeed);
         player.GetComponent<PlayerMovement>().SetDuration(_duration);
+        player.GetComponent<PlayerState>().TakeDamage(15);
+        player.GetComponentInChildren<PlayerWeapon>().SetCooldown(0.1f);
 
         Destroy(gameObject);
     }       

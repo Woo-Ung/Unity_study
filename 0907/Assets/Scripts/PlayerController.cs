@@ -25,10 +25,11 @@ public class PlayerController : MonoBehaviour, IInteractor
     private float _grenadeTime;
     
     private IInteractable _targetInteractable;
+    private IDamageable _targetDamageable;
     private bool _hasDetectInteractable => _targetInteractable != null;
     private bool _isPressdInteractionKey => Input.GetKeyDown(_interactionKey);
     private bool _canInteraction => _hasDetectInteractable && _isPressdInteractionKey;
-    [SerializeField] private bool _isJump = false;
+    [field: SerializeField] public bool _isJump { get; private set; }
 
 
     public GameObject GameObject
@@ -38,12 +39,12 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     private void Awake() => CacheComponents();
     private void Start() => LockCursor();
-    private void FixedUpdate() => Move();   
+    private void FixedUpdate() => _movement.Move();   
     private void Update()
-    {        
+    {
         _movement.Rotate();
         _weapon.Fire();
-        _weapon.Reload();        
+        _weapon.Reload();
         IsJump();
         Jump();
         DetectInteractable();
@@ -58,7 +59,7 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     private void IsJump()
     {
-        Ray ray = new Ray(transform.position+(transform.up*0.2f), Vector3.down);
+        Ray ray = new Ray(transform.position + (transform.up * 0.2f), Vector3.down);
         Debug.DrawRay(transform.position + (transform.up * 0.2f), Vector3.down * _groundDistance, Color.red);
         RaycastHit hit;
 
@@ -70,16 +71,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             _isJump = true;
         }
-    }
-
-    private void Move()
-    {
-        if (_isJump)
-        {
-            return;
-        }
-        _movement.Move();
-    }
+    }   
 
     private void Jump()
     {

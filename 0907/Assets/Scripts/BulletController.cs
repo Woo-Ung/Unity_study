@@ -23,7 +23,7 @@ public class BulletController : MonoBehaviour
     {
         if(TargetLayer.Contains(other))
         {
-            Debug.Log("플레이어 맞음");
+            other.GetComponent<IDamageable>().TakeDamage(10);
         }
 
         Destroy(gameObject);

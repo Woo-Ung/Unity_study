@@ -18,6 +18,9 @@ public class PlayerWeapon : MonoBehaviour
 
     [SerializeField] private int _currentMagazine;
 
+    public int CurrentMagazine => _currentMagazine;
+    public int MaxMagzine => MAX_MAGAZINE;
+
     private const int MAX_MAGAZINE = 30;
     private float _currentCooldown;
 
@@ -29,6 +32,11 @@ public class PlayerWeapon : MonoBehaviour
     private void Awake() => CacheComponent();
     private void Start() => Init();
     private void Update() => UpdateCurrentCooldown();
+
+    public void SetCooldown(float cooldown)
+    {
+        _cooldown = cooldown;
+    }
 
     public void Fire()
     {       

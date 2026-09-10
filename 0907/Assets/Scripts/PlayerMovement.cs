@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
-{
-    
+{    
     [SerializeField] private float _moveSpeed;
     [SerializeField] private float _jumpSpeed;
     [SerializeField] private Transform _cameraPivot;
@@ -30,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 input = ReadRotateInput() * _mouseSensitivity;
 
-        transform.Rotate(0,input.y, 0, Space.Self);
+        transform.Rotate(0, input.y, 0, Space.Self);
 
         _pitch = Mathf.Clamp(_pitch + input.x, _minPitch, _maxPitch);
 
@@ -44,11 +43,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move()
     {
+        PlayerController player = gameObject.GetComponent<PlayerController>();
         Vector3 input = ReadMoveInput();
-
+                
         Vector3 direction = transform.right * input.x + transform.forward * input.z;
         Vector3 newVelocity = new Vector3(direction.x * _moveSpeed, _rigidbody.velocity.y, direction.z * _moveSpeed);
-
         _rigidbody.velocity = newVelocity;
     }
 
@@ -77,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
+        GetComponentInChildren<PlayerWeapon>().SetCooldown(0.3f);
         _moveSpeed -= _upSpeed;
         _useStimpak = false;
         _upTime = 0;
@@ -101,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void CacheComponents()
     {
-        _rigidbody = GetComponent<Rigidbody>();        
+        _rigidbody = GetComponent<Rigidbody>();
         _useStimpak = false;
         _duartion = 0;
         _upSpeed = 0;
