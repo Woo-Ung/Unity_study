@@ -171,6 +171,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6072399119101775812, guid: 964fdc56dda6fe24089150c6a51b3350, type: 3}
+      propertyPath: _boomEffect
+      value: 
+      objectReference: {fileID: 6934243811680401002, guid: 919f7db967938f64391e0b4059c2e79f, type: 3}
+    - target: {fileID: 6072399119101775812, guid: 964fdc56dda6fe24089150c6a51b3350, type: 3}
       propertyPath: _bulletPrefab
       value: 
       objectReference: {fileID: 2187836101818512949, guid: b687e1259654dfd4890e0792f21676d0, type: 3}
