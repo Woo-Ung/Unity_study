@@ -73,7 +73,7 @@ public class PlayerWeapon : MonoBehaviour
     {
         Transform effectTransform = Instantiate(_bulletImpactEffectPrefab).transform;
         effectTransform.position = hit.point;
-        effectTransform.forward = hit.normal;        
+        effectTransform.forward = hit.normal; 
     }
 
     private bool TryGetDamageale(out IDamageable damageable)

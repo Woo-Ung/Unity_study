@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour, IInteractor
 {
@@ -22,11 +23,13 @@ public class PlayerController : MonoBehaviour, IInteractor
     private PlayerWeapon _weapon;    
     private PlayerMovement _movement;
     private Transform _cameraTransform;
+    private PlayerUIController _playerUI;
     private float _grenadeTime;
     
     private IInteractable _targetInteractable;
     private IDamageable _targetDamageable;
     private bool _hasDetectInteractable => _targetInteractable != null;
+    private bool _hasDetectDamageable => _targetDamageable != null;
     private bool _isPressdInteractionKey => Input.GetKeyDown(_interactionKey);
     private bool _canInteraction => _hasDetectInteractable && _isPressdInteractionKey;
     [field: SerializeField] public bool _isJump { get; private set; }
@@ -113,6 +116,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         _movement = GetComponent<PlayerMovement>();
         _weapon = GetComponentInChildren<PlayerWeapon>();
+        _playerUI = GetComponent<PlayerUIController>();
         _cameraTransform = Camera.main.transform;
         _grenadeTime = 1f;
         _grenadeShape = _grenadeSpawn.Find("GrenadeShape").gameObject;
@@ -136,6 +140,45 @@ public class PlayerController : MonoBehaviour, IInteractor
         _cameraTransform.SetPositionAndRotation(_cameraPivot.position, _cameraPivot.rotation);
     }
 
+    //public void DetectDamagerable()
+    //{
+    //    Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
+    //    RaycastHit hit;
+
+    //    if(!Physics.Raycast(ray, out hit, _detectionRange))
+    //    {
+    //        if(_hasDetectDamageable)
+    //        {                
+    //            _playerUI._scope2.gameObject.SetActive(false);
+    //            _playerUI._scope1.gameObject.SetActive(true);
+    //            _targetDamageable = null;
+    //        }
+    //        return;
+    //    }
+
+    //    if (_hasDetectDamageable)
+    //    {
+    //        if (hit.collider.gameObject == _targetDamageable.GameObject)
+    //        {
+    //            return;
+    //        }
+    //    }
+
+    //    if (hit.collider.TryGetComponent<IDamageable>(out IDamageable enemy))
+    //    {
+    //        _playerUI._scope2.gameObject.SetActive(false);
+    //        _playerUI._scope1.gameObject.SetActive(true);
+    //    }
+
+    //    _targetDamageable = hit.collider.GetComponent<IDamageable>();
+
+    //    if (hit.collider.TryGetComponent<IDamageable>(out enemy))
+    //    {
+    //        _playerUI._scope2.gameObject.SetActive(true);
+    //        _playerUI._scope1.gameObject.SetActive(false);
+    //    }
+    //}
+        
     public void DetectInteractable()
     {
         Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
@@ -148,9 +191,17 @@ public class PlayerController : MonoBehaviour, IInteractor
                 _targetInteractable.Untargeting();
                 _targetInteractable = null;
             }
-            
+
+            else if (_hasDetectDamageable)
+            {
+                _playerUI._scope2.gameObject.SetActive(false);
+                _playerUI._scope1.gameObject.SetActive(true);
+                _targetDamageable = null;
+            }
+
             return;
         }
+
         if(_hasDetectInteractable)
         {
             if(hit.collider.gameObject == _targetInteractable.GameObject)
@@ -159,10 +210,31 @@ public class PlayerController : MonoBehaviour, IInteractor
             }
         }
 
+        else if (_hasDetectDamageable)
+        {
+            if (hit.collider.gameObject == _targetDamageable.GameObject)
+            {
+                return;
+            }
+        }
+
         _targetInteractable?.Untargeting();
         _targetInteractable = hit.collider.GetComponent<IInteractable>();
 
         _targetInteractable?.Targeting(); // ?를 붙이면 if문 효과
+              
+        _targetDamageable = hit.collider.GetComponent<IDamageable>();
+
+        if (_targetDamageable == null)
+        {
+            _playerUI._scope2.gameObject.SetActive(false);
+            _playerUI._scope1.gameObject.SetActive(true);
+        }
+        else
+        {
+            _playerUI._scope2.gameObject.SetActive(true);
+            _playerUI._scope1.gameObject.SetActive(false);
+        }        
     }
 
     public void TryInteract()

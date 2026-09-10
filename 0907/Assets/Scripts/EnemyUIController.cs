@@ -7,6 +7,8 @@ using TMPro;
 public class EnemyUIController : MonoBehaviour
 {    
     [SerializeField] private Canvas _hpBar;
+    [SerializeField] private float _hpYPosition;
+    [SerializeField] private Transform _playerTransform;
     private Canvas hpBar;
     private Monster _state;
 
@@ -18,7 +20,9 @@ public class EnemyUIController : MonoBehaviour
 
     private void HPBar()
     {        
-        hpBar.transform.position = new Vector3(transform.position.x, transform.position.y +0.3f, transform.position.z);
+        hpBar.transform.position = new Vector3(transform.position.x, transform.position.y + _hpYPosition, transform.position.z);
+        Vector3 look = new Vector3(_playerTransform.position.x, _playerTransform.position.y, _playerTransform.position.z);
+        transform.LookAt(look);
         Image[] redbar = hpBar.GetComponentsInChildren<Image>();
         redbar[1].fillAmount = ((float)_state._hp / (float)_state.MAX_HP);
     }
