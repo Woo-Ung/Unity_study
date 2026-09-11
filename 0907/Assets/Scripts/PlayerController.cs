@@ -17,13 +17,14 @@ public class PlayerController : MonoBehaviour, IInteractor
     [field: SerializeField] public int _grenade_MaxNum { get; protected set; }
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _groundDistance;
+    [SerializeField] private Canvas _gameoverUI;
 
     private GameObject _grenadeShape;
-    private PlayerWeapon _weapon;    
+    private PlayerWeapon _weapon;
     private PlayerMovement _movement;
     private Transform _cameraTransform;
     private PlayerUIController _playerUI;
-    private float _grenadeTime;    
+    private float _grenadeTime;
     public int _grenade_num { get; protected set; }
 
     private IInteractable _targetInteractable;
@@ -37,7 +38,17 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     public GameObject GameObject
     {
-        get => gameObject;
+        get
+        {
+            if (gameObject == null)
+            {
+                return null;
+            }
+            else
+            {
+                return gameObject;
+            }
+        }
     }
 
     private void Awake() => CacheComponents();
@@ -116,18 +127,25 @@ public class PlayerController : MonoBehaviour, IInteractor
     {
         _movement = GetComponent<PlayerMovement>();
         _weapon = GetComponentInChildren<PlayerWeapon>();
-        _playerUI = GetComponent<PlayerUIController>();
+        _playerUI = GetComponent<PlayerUIController>();      
+        _gameoverUI.gameObject.SetActive(false);
         _cameraTransform = Camera.main.transform;
         _grenadeTime = 1f;
         _grenadeShape = _grenadeSpawn.Find("GrenadeShape").gameObject;
         _grenadeShape.SetActive(false);
-        _grenade_num = _grenade_MaxNum;
+        _grenade_num = _grenade_MaxNum;       
     }
 
     private void LockCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    private void FreeCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void SetWeaponTransform()
@@ -183,8 +201,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         _targetInteractable = hit.collider.GetComponent<IInteractable>();
 
         _targetInteractable?.Targeting(); // ?를 붙이면 if문 효과 null이면 null반환 아니면 .실행
-              
-        
+       
         _targetDamageable = hit.collider.GetComponent<IDamageable>();
 
         if (_targetDamageable == null)
@@ -196,9 +213,9 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             _playerUI._scope2.gameObject.SetActive(true);
             _playerUI._scope1.gameObject.SetActive(false);
-        }        
+        }
     }
-
+      
     public void TryInteract()
     {
         if(!_canInteraction)
@@ -208,5 +225,11 @@ public class PlayerController : MonoBehaviour, IInteractor
 
         _targetInteractable.Interact(this);
         _targetInteractable = null;
+    }
+
+    private void OnDestroy()
+    {
+        _gameoverUI.gameObject.SetActive(true);
+        FreeCursor();
     }
 }

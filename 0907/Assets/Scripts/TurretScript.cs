@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TurretScript : MonoBehaviour
 {
+    [SerializeField] private ObjectPool _bulletpool;
     [SerializeField] private float _rotateSpeed;
     [SerializeField] private float _cooldown;
     [SerializeField] private Transform _headTransform;
@@ -14,7 +15,7 @@ public class TurretScript : MonoBehaviour
     [SerializeField] private BulletController _bulletPrefab;
     [SerializeField] private int _bulletDamage;
     [SerializeField] private float _bulletSpeed;
-    [SerializeField] private float _bulletDestroyDelay;
+    [SerializeField] private float _returnDelay;
 
     public LayerMask TargetLayer;
 
@@ -53,12 +54,21 @@ public class TurretScript : MonoBehaviour
         }
 
         _currentCooldown += Time.deltaTime;
-    }
+    }    
 
     private void SpawnBullet()
     {
-        BulletController bullet = Instantiate(_bulletPrefab, _muzzlePoint.position, _muzzlePoint.rotation);
-        bullet.SetData(_bulletDamage, _bulletSpeed, _bulletDestroyDelay);
+        // 1. 얻어오기
+        IPoolable bullet = _bulletpool.Take();
+
+        // 2. Transform.position, rotation
+        bullet.tr.position = _muzzlePoint.position;
+        bullet.tr.rotation = _muzzlePoint.rotation;
+
+        // 3. 활성화
+        bullet.tr.gameObject.SetActive(true);
+       
+        (bullet as BulletController).SetData(_bulletDamage, _bulletSpeed, _returnDelay);
     }
 
     private void Rotate()

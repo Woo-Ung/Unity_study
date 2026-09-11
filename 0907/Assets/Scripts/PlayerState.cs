@@ -10,7 +10,7 @@ public class PlayerState : MonoBehaviour, IDamageable
 
     public int MaxHp = MAX_HP;
 
-    public GameObject GameObject => gameObject;
+    public GameObject GameObject => gameObject;   
 
     private void Awake() => CacheComponents();
 

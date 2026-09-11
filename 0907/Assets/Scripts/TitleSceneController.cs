@@ -24,5 +24,6 @@ public class TitleSceneController : MonoBehaviour
     public void LoadGameScene()
     {
         SceneManager.LoadScene(1);
-    }
+    }       
+
 }

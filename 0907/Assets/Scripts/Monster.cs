@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Monster : MonoBehaviour, IDamageable
@@ -8,6 +9,19 @@ public class Monster : MonoBehaviour, IDamageable
 
     [field: SerializeField] public int MAX_HP { get; protected set; }
     public GameObject GameObject => gameObject;
+    //{
+    //    get
+    //    {
+    //        if (gameObject == null)
+    //        {
+    //            return null;
+    //        }
+    //        else
+    //        {
+    //            return gameObject;
+    //        }
+    //    }
+    //}
 
     public void Awake() => CacheComponents();
 
@@ -21,7 +35,7 @@ public class Monster : MonoBehaviour, IDamageable
     }
 
     public void CacheComponents()
-    {
+    {        
         _hp = MAX_HP;
         gameObject.layer = 7;
     }        
