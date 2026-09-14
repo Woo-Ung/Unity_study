@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
-{    
-    [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _jumpSpeed;
+{
+    [SerializeField] private PlayerState _playerState;
+ 
     [SerializeField] private Transform _cameraPivot;
     [SerializeField] private float _mouseSensitivity;
     [SerializeField] private float _minPitch;
@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Jump()
     {
-        _rigidbody.AddForce(Vector3.up * _jumpSpeed, ForceMode.Impulse);
+        _rigidbody.AddForce(Vector3.up * _playerState._jumpSpeed, ForceMode.Impulse);
     }
 
     public void Move()
@@ -47,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 input = ReadMoveInput();
                 
         Vector3 direction = transform.right * input.x + transform.forward * input.z;
-        Vector3 newVelocity = new Vector3(direction.x * _moveSpeed, _rigidbody.velocity.y, direction.z * _moveSpeed);
+        Vector3 newVelocity = new Vector3(direction.x * _playerState._moveSpeed, _rigidbody.velocity.y, direction.z * _playerState._moveSpeed);
         _rigidbody.velocity = newVelocity;
     }
 
@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _useStimpak = true;
         _upSpeed = moveSpeed;
-        _moveSpeed += _upSpeed;
+        _playerState._moveSpeed += _upSpeed;
     }
 
     public void SetDuration(int duration)
@@ -77,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         GetComponentInChildren<PlayerWeapon>().SetCooldown(0.3f);
-        _moveSpeed -= _upSpeed;
+        _playerState._moveSpeed -= _upSpeed;
         _useStimpak = false;
         _upTime = 0;
         _duartion = 0;
@@ -100,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void CacheComponents()
     {
+        _playerState = GetComponent<PlayerState>();
         _rigidbody = GetComponent<Rigidbody>();
         _useStimpak = false;
         _duartion = 0;

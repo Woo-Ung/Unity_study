@@ -2837,6 +2837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 164a8d92989002546b9f3af3df5f83ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerState: {fileID: 0}
   _magazine: {fileID: 2010048244}
   _grenade: {fileID: 1505323059}
   _hpBar: {fileID: 2105298683}
@@ -2853,8 +2854,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e32bda81b613d3c409d0c52f70cfa657, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <_hp>k__BackingField: 0
-  MaxHp: 100
+  <_detectionRange>k__BackingField: 5
+  <_grenadeMaxNum>k__BackingField: 3
+  <_grenadeNum>k__BackingField: 3
+  <_moveSpeed>k__BackingField: 5
+  <_jumpSpeed>k__BackingField: 5
+  <_weaponCooldown>k__BackingField: 0.3
+  <_weaponRange>k__BackingField: 20
+  <_weaponDamage>k__BackingField: 10
+  <_hp>k__BackingField: 100
+  <MaxHp>k__BackingField: 100
 --- !u!114 &2105298683 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7057588976802275728, guid: 86d9ae52866b37d4f968779274fd04ab, type: 3}

@@ -4,13 +4,26 @@ using UnityEngine;
 
 public class PlayerState : MonoBehaviour, IDamageable
 {
-    [field: SerializeField] public int _hp { get; protected set; }
+    //---- controller
+    [field: SerializeField] public float _detectionRange { get; set; }
+    [field: SerializeField] public int _grenadeMaxNum { get; set; }
+    [field: SerializeField] public int _grenadeNum { get; set; }
 
-    private const int MAX_HP = 100;
+    //---- movement
+    [field: SerializeField] public float _moveSpeed { get; set; }
+    [field: SerializeField] public float _jumpSpeed { get; set; }
 
-    public int MaxHp = MAX_HP;
+    //---- Weapon
+    [field: SerializeField] public float _weaponCooldown { get; set; }
+    [field: SerializeField] public float _weaponRange { get; set; }
+    [field: SerializeField] public int _weaponDamage { get; set; }
 
-    public GameObject GameObject => gameObject;   
+    // ------ 기존
+    [field: SerializeField] public int _hp { get; set; }
+
+    [field: SerializeField] public int MaxHp { get; set; }
+
+    public GameObject GameObject => gameObject;
 
     private void Awake() => CacheComponents();
 
@@ -25,6 +38,7 @@ public class PlayerState : MonoBehaviour, IDamageable
 
     private void CacheComponents()
     {
-        _hp = MAX_HP;
+        _hp = MaxHp;
+        _grenadeNum = _grenadeMaxNum;
     }
 }

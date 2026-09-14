@@ -7,14 +7,14 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour, IInteractor
 {
+    [SerializeField] private PlayerState _playerState;
+
     [SerializeField] private Transform _cameraPivot;
-    [SerializeField] private Transform _grenadeSpawn;
-    [SerializeField] private float _detectionRange;
+    [SerializeField] private Transform _grenadeSpawn;   
     [SerializeField] private KeyCode _interactionKey = KeyCode.E;
     [SerializeField] private KeyCode _grenadeKey = KeyCode.Alpha3;
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
-    [SerializeField] private GrenadeController _grenadePrefab;
-    [field: SerializeField] public int _grenade_MaxNum { get; protected set; }
+    [SerializeField] private GrenadeController _grenadePrefab;    
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _groundDistance;
     [SerializeField] private Canvas _gameoverUI;
@@ -24,8 +24,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     private PlayerMovement _movement;
     private Transform _cameraTransform;
     private PlayerUIController _playerUI;
-    private float _grenadeTime;
-    public int _grenade_num { get; protected set; }
+    private float _grenadeTime;    
 
     private IInteractable _targetInteractable;
     private IDamageable _targetDamageable;
@@ -98,7 +97,7 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     private void SpawnGrenade()
     {
-        if (_grenade_num < 1)
+        if (_playerState._grenadeNum < 1)
         {
             return;
         }
@@ -114,7 +113,7 @@ public class PlayerController : MonoBehaviour, IInteractor
             GrenadeController grenade = Instantiate(_grenadePrefab, _grenadeSpawn.position, _grenadeSpawn.rotation);
             grenade.SetGrenade(_grenadeTime, _grenadeSpawn);
 
-            _grenade_num--;
+            _playerState._grenadeNum--;
             _grenadeTime = 1f;
         } 
     }
@@ -125,6 +124,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     }
     private void CacheComponents()
     {
+        _playerState = GetComponent<PlayerState>();
         _movement = GetComponent<PlayerMovement>();
         _weapon = GetComponentInChildren<PlayerWeapon>();
         _playerUI = GetComponent<PlayerUIController>();      
@@ -133,7 +133,6 @@ public class PlayerController : MonoBehaviour, IInteractor
         _grenadeTime = 1f;
         _grenadeShape = _grenadeSpawn.Find("GrenadeShape").gameObject;
         _grenadeShape.SetActive(false);
-        _grenade_num = _grenade_MaxNum;       
     }
 
     private void LockCursor()
@@ -163,7 +162,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
         RaycastHit hit;
 
-        if(!Physics.Raycast(ray, out hit, _detectionRange))
+        if(!Physics.Raycast(ray, out hit, _playerState._detectionRange))
         {
             if(_hasDetectInteractable)
             {

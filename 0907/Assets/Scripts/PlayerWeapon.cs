@@ -4,15 +4,13 @@ using UnityEditor;
 using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
-{
-    // Raycast -> IDamageable
-    private Transform _cameraTransform; 
+{  
+    [SerializeField] private PlayerState _playerState;
+
+    private Transform _cameraTransform;
 
     [SerializeField] private KeyCode _fireKey = KeyCode.Mouse0;
     [SerializeField] private KeyCode _reloadKey = KeyCode.R;
-    [SerializeField] private float _range;
-    [SerializeField] private int _damage;
-    [SerializeField] private float _cooldown;
     [SerializeField] private FlameEffect _flameEffect;
     [SerializeField] private FlameEffect _bulletImpactEffectPrefab;
 
@@ -26,7 +24,7 @@ public class PlayerWeapon : MonoBehaviour
 
     private bool _isPressedFire => Input.GetKeyDown(_fireKey);
     
-    private bool _isReadyFire => _currentCooldown >= _cooldown;
+    private bool _isReadyFire => _currentCooldown >= _playerState._weaponCooldown;
     private bool _isNeedReload => _currentMagazine <= 0;
 
     private void Awake() => CacheComponent();
@@ -35,7 +33,7 @@ public class PlayerWeapon : MonoBehaviour
 
     public void SetCooldown(float cooldown)
     {
-        _cooldown = cooldown;
+        _playerState._weaponCooldown = cooldown;
     }
 
     public void Fire()
@@ -60,7 +58,7 @@ public class PlayerWeapon : MonoBehaviour
             return;
         }
 
-        damageable.TakeDamage(_damage);               
+        damageable.TakeDamage(_playerState._weaponDamage);               
     }
 
     private void PlayFlameEffect()
@@ -84,7 +82,7 @@ public class PlayerWeapon : MonoBehaviour
         Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
         RaycastHit hit;
 
-        if(Physics.Raycast(ray, out hit, _range))
+        if(Physics.Raycast(ray, out hit, _playerState._weaponRange))
         {
             PlayBulletImpactEffect(hit);
             result = hit.transform.TryGetComponent(out damageable);
@@ -111,6 +109,7 @@ public class PlayerWeapon : MonoBehaviour
 
     private void CacheComponent()
     {
+        _playerState = GetComponentInParent<PlayerState>();
         _cameraTransform = Camera.main.transform;
     }
 
