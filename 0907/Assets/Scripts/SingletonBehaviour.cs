@@ -29,7 +29,7 @@ public abstract class SingletonBehaviour<T> : MonoBehaviour where T: MonoBehavio
         else
         {
             // 2. 전역적인 접근 지원.
-            _instance = (this as T);//GetComponent<T>();
+            _instance = (this as T); //GetComponent<T>();
 
             // 3. Scene 전환 시에도 유지.
             DontDestroyOnLoad(gameObject);

@@ -7,15 +7,13 @@ using TMPro;
 public class PlayerUIController : MonoBehaviour
 {
     [SerializeField] private PlayerState _playerState;
-
     [SerializeField] private TextMeshProUGUI _magazine;
     [SerializeField] private TextMeshProUGUI _grenade;
-    [SerializeField] private Image _hpBar;
-    
+    [SerializeField] private Image _hpBar;    
     [field: SerializeField] public Canvas _scope { get; protected set; }
     
     private PlayerWeapon _weapon;
-    private PlayerController _player;
+
     public Image _scope1 { get; protected set; }
     public Image _scope2 { get; protected set; }
 
@@ -40,7 +38,6 @@ public class PlayerUIController : MonoBehaviour
         _scope1.gameObject.SetActive(true);
         _scope2.gameObject.SetActive(false);
         _weapon = GetComponentInChildren<PlayerWeapon>();
-        _player = GetComponent<PlayerController>();
     }
 
     public void RefreshMagazineUI()

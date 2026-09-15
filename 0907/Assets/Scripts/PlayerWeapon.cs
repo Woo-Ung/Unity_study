@@ -1,35 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro.EditorUtilities;
 using UnityEditor;
 using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour
 {  
-    [SerializeField] private PlayerState _playerState;
-
-    private Transform _cameraTransform;
-
+    [SerializeField] private PlayerState _playerState;  
     [SerializeField] private KeyCode _fireKey = KeyCode.Mouse0;
     [SerializeField] private KeyCode _reloadKey = KeyCode.R;
     [SerializeField] private FlameEffect _flameEffect;
     [SerializeField] private FlameEffect _bulletImpactEffectPrefab;
-
     [SerializeField] private int _currentMagazine;
-
+    [SerializeField] private float _reloadDelay;
+    private Transform _cameraTransform;
     public int CurrentMagazine => _currentMagazine;
     public int MaxMagzine => MAX_MAGAZINE;
 
     private const int MAX_MAGAZINE = 30;
-    private float _currentCooldown;
 
     private bool _isPressedFire => Input.GetKeyDown(_fireKey);
-    
-    private bool _isReadyFire => _currentCooldown >= _playerState._weaponCooldown;
+
+    private bool _isReadyFire = true;
     private bool _isNeedReload => _currentMagazine <= 0;
+    private bool _isReloading;
+
 
     private void Awake() => CacheComponent();
-    private void Start() => Init();
-    private void Update() => UpdateCurrentCooldown();
+    private void Start() => Init(); 
 
     public void SetCooldown(float cooldown)
     {
@@ -38,7 +36,7 @@ public class PlayerWeapon : MonoBehaviour
 
     public void Fire()
     {       
-        if (!_isPressedFire || !_isReadyFire)
+        if (!_isPressedFire || !_isReadyFire || _isReloading)
         {
             return;
         }
@@ -50,7 +48,7 @@ public class PlayerWeapon : MonoBehaviour
         }
         
         _currentMagazine--;
-        _currentCooldown = 0f;
+        StartCoroutine(UpdateCurrentCooldown());
         PlayFlameEffect();
 
         if (!TryGetDamageale(out IDamageable damageable))
@@ -82,7 +80,7 @@ public class PlayerWeapon : MonoBehaviour
         Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
         RaycastHit hit;
 
-        if(Physics.Raycast(ray, out hit, _playerState._weaponRange))
+        if (Physics.Raycast(ray, out hit, _playerState._weaponRange))
         {
             PlayBulletImpactEffect(hit);
             result = hit.transform.TryGetComponent(out damageable);
@@ -92,20 +90,27 @@ public class PlayerWeapon : MonoBehaviour
 
     public void Reload()
     {
+        if (_isReloading) return;
         if (Input.GetKeyDown(_reloadKey))
         {
-            _currentMagazine = MAX_MAGAZINE;
+            StartCoroutine(ReloadRoutine());
         }
     }
 
-    public void UpdateCurrentCooldown()
-    {        
-        if(_isReadyFire)
-        {
-            return;
-        }
-        _currentCooldown += Time.deltaTime;        
-    }          
+    public IEnumerator ReloadRoutine()
+    {
+        _isReloading = true;
+        yield return new WaitForSeconds(_reloadDelay);
+        _currentMagazine = MAX_MAGAZINE;      
+        _isReloading = false;
+    }
+
+    public IEnumerator UpdateCurrentCooldown()
+    {
+        _isReadyFire = false;
+        yield return new WaitForSeconds(_playerState._weaponCooldown);
+        _isReadyFire = true;
+    }             
 
     private void CacheComponent()
     {
@@ -114,8 +119,7 @@ public class PlayerWeapon : MonoBehaviour
     }
 
     private void Init()
-    {
-        _currentCooldown = 0f;
+    {        
         _currentMagazine = MAX_MAGAZINE;
     }
 }

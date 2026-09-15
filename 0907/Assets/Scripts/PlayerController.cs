@@ -8,15 +8,13 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour, IInteractor
 {
     [SerializeField] private PlayerState _playerState;
-
     [SerializeField] private Transform _cameraPivot;
-    [SerializeField] private Transform _grenadeSpawn;   
+    [SerializeField] private Transform _grenadeSpawn;
     [SerializeField] private KeyCode _interactionKey = KeyCode.E;
     [SerializeField] private KeyCode _grenadeKey = KeyCode.Alpha3;
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
     [SerializeField] private GrenadeController _grenadePrefab;    
-    [SerializeField] private LayerMask _groundLayer;
-    [SerializeField] private float _groundDistance;
+    [SerializeField] private LayerMask _groundLayer;  
     [SerializeField] private Canvas _gameoverUI;
 
     private GameObject _grenadeShape;
@@ -33,7 +31,6 @@ public class PlayerController : MonoBehaviour, IInteractor
     private bool _isPressdInteractionKey => Input.GetKeyDown(_interactionKey);
     private bool _canInteraction => _hasDetectInteractable && _isPressdInteractionKey;
     [field: SerializeField] public bool _isJump { get; private set; }
-
 
     public GameObject GameObject
     {
@@ -73,10 +70,10 @@ public class PlayerController : MonoBehaviour, IInteractor
     private void IsJump()
     {
         Ray ray = new Ray(transform.position + (transform.up * 0.2f), Vector3.down);
-        Debug.DrawRay(transform.position + (transform.up * 0.2f), Vector3.down * _groundDistance, Color.red);
+        Debug.DrawRay(transform.position + (transform.up * 0.2f), Vector3.down * _playerState._groundDistance, Color.red);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, _groundDistance, _groundLayer))
+        if (Physics.Raycast(ray, out hit, _playerState._groundDistance, _groundLayer))
         {            
             _isJump = false;                     
         }
@@ -84,7 +81,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         {
             _isJump = true;
         }
-    }   
+    }
 
     private void Jump()
     {
@@ -157,7 +154,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         _cameraTransform.SetPositionAndRotation(_cameraPivot.position, _cameraPivot.rotation);
     }
 
-    public void DetectInteractable()
+    public void DetectInteractable() //코루틴수정ㄱ
     {
         Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
         RaycastHit hit;
@@ -176,7 +173,6 @@ public class PlayerController : MonoBehaviour, IInteractor
                 _playerUI._scope1.gameObject.SetActive(true);
                 _targetDamageable = null;
             }
-
             return;
         }
 
@@ -213,8 +209,7 @@ public class PlayerController : MonoBehaviour, IInteractor
             _playerUI._scope2.gameObject.SetActive(true);
             _playerUI._scope1.gameObject.SetActive(false);
         }
-    }
-      
+    }      
     public void TryInteract()
     {
         if(!_canInteraction)
@@ -225,7 +220,6 @@ public class PlayerController : MonoBehaviour, IInteractor
         _targetInteractable.Interact(this);
         _targetInteractable = null;
     }
-
     private void OnDestroy()
     {
         _gameoverUI.gameObject.SetActive(true);

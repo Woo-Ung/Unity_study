@@ -7,11 +7,10 @@ public class BulletController : MonoBehaviour, IPoolable
     private int _damage;
     private float _speed;
     private float _returnDealy;
-    private float _elapsedTime;
+    private bool _isReturn = false;
 
     public ObjectPool Pool { get; set; }
     public Transform tr { get => transform; }
-
     public LayerMask TargetLayer;
 
     private void Awake()
@@ -35,24 +34,38 @@ public class BulletController : MonoBehaviour, IPoolable
     }
 
     private void Update()
-    {
-        UpdateElapsedTime();
+    {        
         MoveForward();
-        ReturnToPool();
+        SetReturnToPool();
     }
-
-    public void ReturnToPool()
+    public void SetReturnToPool()
     {
-        // 제한시간이 경과할 것.
-        if (_elapsedTime >= _returnDealy)
+        if (!_isReturn)
         {
-            // 자신이 속한 풀에 대한 참조
-
-            // 풀 내부적으로 다시 오브젝트를 넣어놓는 기능
-            _elapsedTime = 0;
-            Pool.Return(this);
+            StartCoroutine(ReturnToPool());
         }
     }
+
+    public IEnumerator ReturnToPool()
+    {
+        _isReturn = true;
+        yield return new WaitForSeconds(_returnDealy);
+        Pool.Return(this);
+        _isReturn = false;
+    }
+
+    //public void ReturnToPool()
+    //{
+    //    // 제한시간이 경과할 것.
+    //    if (_elapsedTime >= _returnDealy)
+    //    {
+    //        // 자신이 속한 풀에 대한 참조
+
+    //        // 풀 내부적으로 다시 오브젝트를 넣어놓는 기능
+    //        _elapsedTime = 0;
+    //        Pool.Return(this);
+    //    }
+    //}
 
     private void MoveForward()
     {
@@ -64,10 +77,5 @@ public class BulletController : MonoBehaviour, IPoolable
         _damage = damage;
         _speed = speed;
         _returnDealy = returnDelay;
-    }
-
-    private void UpdateElapsedTime()
-    {
-        _elapsedTime += Time.deltaTime;
     }
 }

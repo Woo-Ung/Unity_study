@@ -19,21 +19,20 @@ public class TurretScript : MonoBehaviour
 
     public LayerMask TargetLayer;
 
-    private float _currentCooldown;
     private Transform _playerTransform;
-    private bool _isPlayerInTrigger => _playerTransform != null;
-    private bool _isPlayerInSight = false;   
-    private bool _isReadyToFire { get { return _currentCooldown >= _cooldown; } }
     private SphereCollider _sphereCollider;
+    private bool _isPlayerInTrigger => _playerTransform != null;
+    private bool _isPlayerInSight = false;
+    private bool _isShoot = false;
+    
 
     //--엔진 매서드
     private void Awake() => CacheComponents();
-        private void Update()
-    {
-        UpdateCurrentCooldown();
-        RayShotToPlayer();
+    private void Update()
+    {        
+        RayShotToPlayer(); // 코루틴수정ㄱ
         Rotate();
-        Fire();
+        FireMode();
     }
 
     public void playerTransform(Transform playerTransform)
@@ -45,16 +44,6 @@ public class TurretScript : MonoBehaviour
     {
         _sphereCollider = GetComponentInChildren<SphereCollider>();
     }
-
-    private void UpdateCurrentCooldown()
-    {
-        if(_isReadyToFire)
-        {
-            return;
-        }
-
-        _currentCooldown += Time.deltaTime;
-    }    
 
     private void SpawnBullet()
     {
@@ -79,7 +68,14 @@ public class TurretScript : MonoBehaviour
         }        
         _headTransform.Rotate(Vector3.up,_rotateSpeed * Time.deltaTime);
     }
-    private void Fire()
+    private IEnumerator Fire()
+    {
+        _isShoot = true;
+        yield return new WaitForSeconds(_cooldown);
+        SpawnBullet();
+        _isShoot = false;
+    }
+    private void FireMode()
     {
         if(!_isPlayerInSight || !_isPlayerInTrigger)
         {
@@ -89,14 +85,10 @@ public class TurretScript : MonoBehaviour
         Vector3 look = new Vector3(_playerTransform.position.x, _headTransform.position.y, _playerTransform.position.z);
         _headTransform.LookAt(look);
 
-        if(!_isReadyToFire)
+        if (!_isShoot)
         {
-            return;
+            StartCoroutine(Fire());
         }
-
-        SpawnBullet();
-
-        _currentCooldown = 0f;
     }
 
     private void RayShotToPlayer()

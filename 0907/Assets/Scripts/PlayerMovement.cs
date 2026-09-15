@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private PlayerState _playerState;
- 
+    [SerializeField] private PlayerState _playerState; 
     [SerializeField] private Transform _cameraPivot;
     [SerializeField] private float _mouseSensitivity;
     [SerializeField] private float _minPitch;
     [SerializeField] private float _maxPitch;
 
     private float _pitch;
+
+    //--stimpak
     private float _upSpeed;
     private float _upTime;
     private int _duartion;

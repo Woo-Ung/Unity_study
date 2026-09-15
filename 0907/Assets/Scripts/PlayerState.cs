@@ -8,6 +8,7 @@ public class PlayerState : MonoBehaviour, IDamageable
     [field: SerializeField] public float _detectionRange { get; set; }
     [field: SerializeField] public int _grenadeMaxNum { get; set; }
     [field: SerializeField] public int _grenadeNum { get; set; }
+    [field: SerializeField] public float _groundDistance { get; set; }
 
     //---- movement
     [field: SerializeField] public float _moveSpeed { get; set; }
@@ -20,7 +21,6 @@ public class PlayerState : MonoBehaviour, IDamageable
 
     // ------ 기존
     [field: SerializeField] public int _hp { get; set; }
-
     [field: SerializeField] public int MaxHp { get; set; }
 
     public GameObject GameObject => gameObject;

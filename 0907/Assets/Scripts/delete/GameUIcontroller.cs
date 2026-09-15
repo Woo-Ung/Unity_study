@@ -9,7 +9,6 @@ public class GameUIcontroller : MonoBehaviour
     [SerializeField] private Button _title;
     [SerializeField] private Button _retry;
 
-
     public void LoadGameScene()
     {
         SceneManager.LoadScene(1);
@@ -19,5 +18,4 @@ public class GameUIcontroller : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
-
 }

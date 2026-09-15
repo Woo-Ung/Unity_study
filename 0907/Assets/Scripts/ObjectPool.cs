@@ -39,7 +39,7 @@ public class ObjectPool : MonoBehaviour
         Count++;
     }
 
-    private void  Init()
+    private void Init()
     {
         _pool = new IPoolable[Size];
 
