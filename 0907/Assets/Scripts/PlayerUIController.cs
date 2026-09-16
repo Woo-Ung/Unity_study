@@ -11,19 +11,25 @@ public class PlayerUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _grenade;
     [SerializeField] private Image _hpBar;    
     [field: SerializeField] public Canvas _scope { get; protected set; }
-    
+
     private PlayerWeapon _weapon;
+    private PlayerUIManager PlayerUI => PlayerUIManager.Instance;
 
     public Image _scope1 { get; protected set; }
     public Image _scope2 { get; protected set; }
 
     private void Awake() => CacheComponents();
-    private void Update()
+    //private void Update()
+    //{
+    //    RefreshMagazineUI();
+    //    HPBar();
+    //}
+    private void OnEnable() => BindInputActions();
+    private void BindInputActions()
     {
-        RefreshMagazineUI();
-        HPBar();
+        PlayerUI.HPBar += HPBar;
+        PlayerUI.RefreshMagazineUI += RefreshMagazineUI;
     }
-
     private void HPBar()
     {
         _hpBar.fillAmount = ((float)_playerState._hp / (float)_playerState.MaxHp);

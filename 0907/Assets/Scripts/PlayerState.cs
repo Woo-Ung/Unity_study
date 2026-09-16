@@ -34,7 +34,6 @@ public class PlayerState : MonoBehaviour, IDamageable
     }
 
     private void Awake() => CacheComponents();
-
     private void OnDestroy() => CleanUp();
 
     public void TakeDamage(int damage)

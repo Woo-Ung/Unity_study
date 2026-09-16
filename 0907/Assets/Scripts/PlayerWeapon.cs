@@ -44,6 +44,7 @@ public class PlayerWeapon : MonoBehaviour
         }
         
         _currentMagazine--;
+        
         StartCoroutine(UpdateCurrentCooldown());
         PlayFlameEffect();
 

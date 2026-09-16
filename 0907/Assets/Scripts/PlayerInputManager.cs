@@ -6,7 +6,7 @@ using System;
 public class PlayerInputManager : MonoBehaviour
 {
     // controller
-    [SerializeField] private KeyCode _interactionKey = KeyCode.E;    
+    [SerializeField] private KeyCode _interactionKey = KeyCode.E;
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode _grenadeKey = KeyCode.Alpha3;
 

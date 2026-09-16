@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     public PlayerInputManager PlayerInput => PlayerInputManager.Instance;
 
     private void Awake() => CacheComponents();
-    private void OnEnable() => BindInputActions();
+    //private void OnEnable() => BindInputActions();
     private void Update()
     {
         IsJump();
@@ -39,33 +39,33 @@ public class PlayerController : MonoBehaviour, IInteractor
     private void LateUpdate()
     {        
         SetCameraTransform();
-        SetWeaponTransform();        
+        SetWeaponTransform();
     }
-    private void OnDisable() => UnbindInputActions();
+    //private void OnDisable() => UnbindInputActions();
 
-    private void BindInputActions()
-    { 
-        PlayerInput.Move += _movement.Move;
-        PlayerInput.Rotate += _movement.Rotate;
-        PlayerInput.Jump += Jump;
-        PlayerInput.Interact += TryInteract;
-        PlayerInput.Fire += _weapon.Fire;
-        PlayerInput.Reload += _weapon.Reload;
-        PlayerInput.GrenadeSpawn += GrenadeSpawn;
-        PlayerInput.GrenadeThrow += GrenadeThrow;
-    }
+    //private void BindInputActions()
+    //{ 
+    //    PlayerInput.Move += _movement.Move;
+    //    PlayerInput.Rotate += _movement.Rotate;
+    //    PlayerInput.Jump += Jump;
+    //    PlayerInput.Interact += TryInteract;
+    //    PlayerInput.Fire += _weapon.Fire;
+    //    PlayerInput.Reload += _weapon.Reload;
+    //    PlayerInput.GrenadeSpawn += GrenadeSpawn;
+    //    PlayerInput.GrenadeThrow += GrenadeThrow;
+    //}
 
-    private void UnbindInputActions()
-    {
-        PlayerInput.Move -= _movement.Move;
-        PlayerInput.Rotate -= _movement.Rotate;
-        PlayerInput.Jump -= Jump;
-        PlayerInput.Interact -= TryInteract;
-        PlayerInput.Fire -= _weapon.Fire;
-        PlayerInput.Reload -= _weapon.Reload;
-        PlayerInput.GrenadeSpawn -= GrenadeSpawn;
-        PlayerInput.GrenadeThrow -= GrenadeThrow;
-    }
+    //private void UnbindInputActions()
+    //{
+    //    PlayerInput.Move -= _movement.Move;
+    //    PlayerInput.Rotate -= _movement.Rotate;
+    //    PlayerInput.Jump -= Jump;
+    //    PlayerInput.Interact -= TryInteract;
+    //    PlayerInput.Fire -= _weapon.Fire;
+    //    PlayerInput.Reload -= _weapon.Reload;
+    //    PlayerInput.GrenadeSpawn -= GrenadeSpawn;
+    //    PlayerInput.GrenadeThrow -= GrenadeThrow;
+    //}
 
     private void IsJump()
     {
@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         GrenadeController grenade = Instantiate(_grenadePrefab, _grenadeSpawn.position, _grenadeSpawn.rotation);
         grenade.SetGrenade(_grenadeTime, _grenadeSpawn);
 
-        _playerState._grenadeNum--;
+        _playerState._grenadeNum--;        
         _grenadeTime = 1f;
     }
 
@@ -128,7 +128,6 @@ public class PlayerController : MonoBehaviour, IInteractor
         _grenadeShape = _grenadeSpawn.Find("GrenadeShape").gameObject;
         _grenadeShape.SetActive(false);
     }
-
 
     private void FreeCursor()
     {
