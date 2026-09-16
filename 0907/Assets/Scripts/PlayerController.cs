@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,9 +9,6 @@ public class PlayerController : MonoBehaviour, IInteractor
     [SerializeField] private PlayerState _playerState;
     [SerializeField] private Transform _cameraPivot;
     [SerializeField] private Transform _grenadeSpawn;
-    [SerializeField] private KeyCode _interactionKey = KeyCode.E;
-    [SerializeField] private KeyCode _grenadeKey = KeyCode.Alpha3;
-    [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
     [SerializeField] private GrenadeController _grenadePrefab;    
     [SerializeField] private LayerMask _groundLayer;  
     [SerializeField] private Canvas _gameoverUI;
@@ -28,43 +24,47 @@ public class PlayerController : MonoBehaviour, IInteractor
     private IDamageable _targetDamageable;
     private bool _hasDetectInteractable => _targetInteractable != null;
     private bool _hasDetectDamageable => _targetDamageable != null;
-    private bool _isPressdInteractionKey => Input.GetKeyDown(_interactionKey);
-    private bool _canInteraction => _hasDetectInteractable && _isPressdInteractionKey;
     [field: SerializeField] public bool _isJump { get; private set; }
 
-    public GameObject GameObject
-    {
-        get
-        {
-            if (gameObject == null)
-            {
-                return null;
-            }
-            else
-            {
-                return gameObject;
-            }
-        }
-    }
+    public GameObject GameObject { get => gameObject; }
+    public PlayerInputManager PlayerInput => PlayerInputManager.Instance;
 
     private void Awake() => CacheComponents();
-    private void Start() => LockCursor();
-    private void FixedUpdate() => _movement.Move();   
+    private void OnEnable() => BindInputActions();
     private void Update()
     {
-        _movement.Rotate();
-        _weapon.Fire();
-        _weapon.Reload();
         IsJump();
-        Jump();
         DetectInteractable();
-        TryInteract();
-        SpawnGrenade();
     }
     private void LateUpdate()
     {        
         SetCameraTransform();
         SetWeaponTransform();        
+    }
+    private void OnDisable() => UnbindInputActions();
+
+    private void BindInputActions()
+    { 
+        PlayerInput.Move += _movement.Move;
+        PlayerInput.Rotate += _movement.Rotate;
+        PlayerInput.Jump += Jump;
+        PlayerInput.Interact += TryInteract;
+        PlayerInput.Fire += _weapon.Fire;
+        PlayerInput.Reload += _weapon.Reload;
+        PlayerInput.GrenadeSpawn += GrenadeSpawn;
+        PlayerInput.GrenadeThrow += GrenadeThrow;
+    }
+
+    private void UnbindInputActions()
+    {
+        PlayerInput.Move -= _movement.Move;
+        PlayerInput.Rotate -= _movement.Rotate;
+        PlayerInput.Jump -= Jump;
+        PlayerInput.Interact -= TryInteract;
+        PlayerInput.Fire -= _weapon.Fire;
+        PlayerInput.Reload -= _weapon.Reload;
+        PlayerInput.GrenadeSpawn -= GrenadeSpawn;
+        PlayerInput.GrenadeThrow -= GrenadeThrow;
     }
 
     private void IsJump()
@@ -85,38 +85,35 @@ public class PlayerController : MonoBehaviour, IInteractor
 
     private void Jump()
     {
-        if(!Input.GetKeyDown(_jumpKey) || _isJump)
+        if(_isJump)
         {
             return;
         }
         _movement.Jump();
     }
 
-    private void SpawnGrenade()
+    private void GrenadeSpawn()
     {
         if (_playerState._grenadeNum < 1)
         {
             return;
         }
 
-        if (Input.GetKey(_grenadeKey))
-        {
-            Charging();
-            _grenadeShape.SetActive(true);
-        }
-        if (Input.GetKeyUp(_grenadeKey))
-        {
-            _grenadeShape.SetActive(false);
-            GrenadeController grenade = Instantiate(_grenadePrefab, _grenadeSpawn.position, _grenadeSpawn.rotation);
-            grenade.SetGrenade(_grenadeTime, _grenadeSpawn);
+        Charging();
+    }
+    private void GrenadeThrow()
+    {
+        _grenadeShape.SetActive(false);
+        GrenadeController grenade = Instantiate(_grenadePrefab, _grenadeSpawn.position, _grenadeSpawn.rotation);
+        grenade.SetGrenade(_grenadeTime, _grenadeSpawn);
 
-            _playerState._grenadeNum--;
-            _grenadeTime = 1f;
-        } 
+        _playerState._grenadeNum--;
+        _grenadeTime = 1f;
     }
 
     private void Charging()
     {
+        _grenadeShape.SetActive(true);
         _grenadeTime += Time.deltaTime;
     }
     private void CacheComponents()
@@ -132,11 +129,6 @@ public class PlayerController : MonoBehaviour, IInteractor
         _grenadeShape.SetActive(false);
     }
 
-    private void LockCursor()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
 
     private void FreeCursor()
     {
@@ -212,7 +204,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     }      
     public void TryInteract()
     {
-        if(!_canInteraction)
+        if(!_hasDetectDamageable)
         {
             return;
         }

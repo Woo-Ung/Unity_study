@@ -26,29 +26,27 @@ public class PlayerMovement : MonoBehaviour
         EndStimpack();
     }
 
-    public void Rotate()
+    public void Rotate(Vector3 input)
     {
-        Vector3 input = ReadRotateInput() * _mouseSensitivity;
+        Vector3 direction = input * _mouseSensitivity;
 
-        transform.Rotate(0, input.y, 0, Space.Self);
+        transform.Rotate(0, direction.y, 0, Space.Self);
 
-        _pitch = Mathf.Clamp(_pitch + input.x, _minPitch, _maxPitch);
+        _pitch = Mathf.Clamp(_pitch + direction.x, _minPitch, _maxPitch);
 
         _cameraPivot.localRotation = Quaternion.Euler(_pitch, 0, 0);
-    }    
+    }
 
     public void Jump()
     {
         _rigidbody.AddForce(Vector3.up * _playerState._jumpSpeed, ForceMode.Impulse);
     }
 
-    public void Move()
-    {
-        PlayerController player = gameObject.GetComponent<PlayerController>();
-        Vector3 input = ReadMoveInput();
-                
-        Vector3 direction = transform.right * input.x + transform.forward * input.z;
+    public void Move(Vector2 input)
+    {                
+        Vector3 direction = transform.right * input.x + transform.forward * input.y;
         Vector3 newVelocity = new Vector3(direction.x * _playerState._moveSpeed, _rigidbody.velocity.y, direction.z * _playerState._moveSpeed);
+
         _rigidbody.velocity = newVelocity;
     }
 
@@ -84,21 +82,6 @@ public class PlayerMovement : MonoBehaviour
         _duartion = 0;
     }
 
-    private Vector3 ReadRotateInput()
-    {
-        float x = Input.GetAxis("Mouse X");
-        float y = Input.GetAxis("Mouse Y");
-
-        return new Vector3(-y, x, 0);
-    }
-
-    private Vector3 ReadMoveInput()
-    {
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
-
-        return new Vector3(x, 0, z).normalized;
-    }
     private void CacheComponents()
     {
         _playerState = GetComponent<PlayerState>();

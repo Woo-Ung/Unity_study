@@ -23,15 +23,25 @@ public class PlayerState : MonoBehaviour, IDamageable
     [field: SerializeField] public int _hp { get; set; }
     [field: SerializeField] public int MaxHp { get; set; }
 
-    public GameObject GameObject => gameObject;
+    private GameObject _gameObject;
+    public GameObject GameObject
+    {
+        get
+        {
+            _gameObject = gameObject;
+            return _gameObject;
+        }
+    }
 
     private void Awake() => CacheComponents();
+
+    private void OnDestroy() => CleanUp();
 
     public void TakeDamage(int damage)
     {
         _hp -= damage;
         if(_hp <= 0)
-        {
+        {            
             Destroy(gameObject);
         }
     }
@@ -40,5 +50,10 @@ public class PlayerState : MonoBehaviour, IDamageable
     {
         _hp = MaxHp;
         _grenadeNum = _grenadeMaxNum;
+    }
+
+    public void CleanUp()
+    {
+        _gameObject = null;
     }
 }

@@ -7,8 +7,6 @@ using UnityEngine;
 public class PlayerWeapon : MonoBehaviour
 {  
     [SerializeField] private PlayerState _playerState;  
-    [SerializeField] private KeyCode _fireKey = KeyCode.Mouse0;
-    [SerializeField] private KeyCode _reloadKey = KeyCode.R;
     [SerializeField] private FlameEffect _flameEffect;
     [SerializeField] private FlameEffect _bulletImpactEffectPrefab;
     [SerializeField] private int _currentMagazine;
@@ -18,8 +16,6 @@ public class PlayerWeapon : MonoBehaviour
     public int MaxMagzine => MAX_MAGAZINE;
 
     private const int MAX_MAGAZINE = 30;
-
-    private bool _isPressedFire => Input.GetKeyDown(_fireKey);
 
     private bool _isReadyFire = true;
     private bool _isNeedReload => _currentMagazine <= 0;
@@ -36,7 +32,7 @@ public class PlayerWeapon : MonoBehaviour
 
     public void Fire()
     {       
-        if (!_isPressedFire || !_isReadyFire || _isReloading)
+        if (!_isReadyFire || _isReloading)
         {
             return;
         }
@@ -90,11 +86,12 @@ public class PlayerWeapon : MonoBehaviour
 
     public void Reload()
     {
-        if (_isReloading) return;
-        if (Input.GetKeyDown(_reloadKey))
+        if (_isReloading)
         {
-            StartCoroutine(ReloadRoutine());
+            return;
         }
+
+        StartCoroutine(ReloadRoutine());      
     }
 
     public IEnumerator ReloadRoutine()

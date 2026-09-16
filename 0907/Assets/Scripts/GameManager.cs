@@ -15,16 +15,15 @@ public class GameManager : SingletonBehaviour<GameManager>
     private void Awake() => SetSingleton();
     private void Start()
     {
-        // Title씬이면 UnlockCursor
         Run();
     }
 
-    public void LoadGameScene()
+    public static void LoadGameScene()
     {
         SceneManager.LoadScene(1);
     }
 
-    public void LoadTitleScene()
+    public static void LoadTitleScene()
     {
         SceneManager.LoadScene(0);
     }
@@ -34,6 +33,10 @@ public class GameManager : SingletonBehaviour<GameManager>
         LockCursor();
         Time.timeScale = 1;
         IsGameRunning = true;
+        if (SceneManager.GetActiveScene().name == "Title")
+        {
+            UnlockCursor();
+        }
     }
 
     public void Pause()

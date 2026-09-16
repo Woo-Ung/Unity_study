@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurretScript : MonoBehaviour
+public class TurretScript : Monster
 {
     [SerializeField] private ObjectPool _bulletpool;
     [SerializeField] private float _rotateSpeed;
@@ -18,7 +18,6 @@ public class TurretScript : MonoBehaviour
     [SerializeField] private float _returnDelay;
 
     public LayerMask TargetLayer;
-
     private Transform _playerTransform;
     private SphereCollider _sphereCollider;
     private bool _isPlayerInTrigger => _playerTransform != null;
@@ -40,8 +39,9 @@ public class TurretScript : MonoBehaviour
         _playerTransform = playerTransform;
     }
 
-    private void CacheComponents()
+    public override void CacheComponents()
     {
+        base.CacheComponents();
         _sphereCollider = GetComponentInChildren<SphereCollider>();
     }
 
@@ -118,8 +118,13 @@ public class TurretScript : MonoBehaviour
             _isPlayerInSight = false;
         }
     }
-    private void OnDestroy()
+    public override void TakeDamage(int damage)
     {
-        FlameEffect boom = Instantiate(_boomEffect, transform.position, _boomEffect.transform.rotation);
+        _hp -= damage;
+        if (_hp <= 0)
+        {
+            Destroy(gameObject);
+            FlameEffect boom = Instantiate(_boomEffect, transform.position, _boomEffect.transform.rotation);
+        }
     }
 }
