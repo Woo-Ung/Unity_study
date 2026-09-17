@@ -13,26 +13,22 @@ public class PlayerUIController : MonoBehaviour
     [field: SerializeField] public Canvas _scope { get; protected set; }
 
     private PlayerWeapon _weapon;
-    private PlayerUIManager PlayerUI => PlayerUIManager.Instance;
 
     public Image _scope1 { get; protected set; }
     public Image _scope2 { get; protected set; }
 
     private void Awake() => CacheComponents();
-    //private void Update()
-    //{
-    //    RefreshMagazineUI();
-    //    HPBar();
-    //}
+
     private void OnEnable() => BindInputActions();
     private void BindInputActions()
     {
-        PlayerUI.HPBar += HPBar;
-        PlayerUI.RefreshMagazineUI += RefreshMagazineUI;
+        _playerState.HPChanged += HPBar;
+        //_playerState.RefreshMagazineUI += RefreshMagazineUI;
     }
-    private void HPBar()
+
+    private void HPBar(int _hp)
     {
-        _hpBar.fillAmount = ((float)_playerState._hp / (float)_playerState.MaxHp);
+        _hpBar.fillAmount = ((float)_hp / (float)_playerState.MaxHp);
     }
 
     private void CacheComponents()

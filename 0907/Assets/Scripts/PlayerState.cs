@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,8 @@ public class PlayerState : MonoBehaviour, IDamageable
     [field: SerializeField] public int _hp { get; set; }
     [field: SerializeField] public int MaxHp { get; set; }
 
+    public event Action<int> HPChanged;
+
     private GameObject _gameObject;
     public GameObject GameObject
     {
@@ -39,8 +42,11 @@ public class PlayerState : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         _hp -= damage;
+
+        HPChanged?.Invoke(_hp);
+
         if(_hp <= 0)
-        {            
+        {
             Destroy(gameObject);
         }
     }

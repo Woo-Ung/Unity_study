@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     public PlayerInputManager PlayerInput => PlayerInputManager.Instance;
 
     private void Awake() => CacheComponents();
-    //private void OnEnable() => BindInputActions();
+    private void OnEnable() => BindInputActions();
     private void Update()
     {
         IsJump();
@@ -41,31 +41,31 @@ public class PlayerController : MonoBehaviour, IInteractor
         SetCameraTransform();
         SetWeaponTransform();
     }
-    //private void OnDisable() => UnbindInputActions();
+    private void OnDisable() => UnbindInputActions();
 
-    //private void BindInputActions()
-    //{ 
-    //    PlayerInput.Move += _movement.Move;
-    //    PlayerInput.Rotate += _movement.Rotate;
-    //    PlayerInput.Jump += Jump;
-    //    PlayerInput.Interact += TryInteract;
-    //    PlayerInput.Fire += _weapon.Fire;
-    //    PlayerInput.Reload += _weapon.Reload;
-    //    PlayerInput.GrenadeSpawn += GrenadeSpawn;
-    //    PlayerInput.GrenadeThrow += GrenadeThrow;
-    //}
+    private void BindInputActions()
+    {
+        PlayerInput.Move += _movement.Move;
+        PlayerInput.Rotate += _movement.Rotate;
+        PlayerInput.Jump += Jump;
+        PlayerInput.Interact += TryInteract;
+        PlayerInput.Fire += _weapon.Fire;
+        PlayerInput.Reload += _weapon.Reload;
+        PlayerInput.GrenadeSpawn += GrenadeSpawn;
+        PlayerInput.GrenadeThrow += GrenadeThrow;
+    }
 
-    //private void UnbindInputActions()
-    //{
-    //    PlayerInput.Move -= _movement.Move;
-    //    PlayerInput.Rotate -= _movement.Rotate;
-    //    PlayerInput.Jump -= Jump;
-    //    PlayerInput.Interact -= TryInteract;
-    //    PlayerInput.Fire -= _weapon.Fire;
-    //    PlayerInput.Reload -= _weapon.Reload;
-    //    PlayerInput.GrenadeSpawn -= GrenadeSpawn;
-    //    PlayerInput.GrenadeThrow -= GrenadeThrow;
-    //}
+    private void UnbindInputActions()
+    {
+        PlayerInput.Move -= _movement.Move;
+        PlayerInput.Rotate -= _movement.Rotate;
+        PlayerInput.Jump -= Jump;
+        PlayerInput.Interact -= TryInteract;
+        PlayerInput.Fire -= _weapon.Fire;
+        PlayerInput.Reload -= _weapon.Reload;
+        PlayerInput.GrenadeSpawn -= GrenadeSpawn;
+        PlayerInput.GrenadeThrow -= GrenadeThrow;
+    }
 
     private void IsJump()
     {
