@@ -13,6 +13,7 @@ public class MoveFloor : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             _animator.SetBool("isTrigger", true);
+            other.transform.SetParent(transform);
         }
     }
     private void OnTriggerExit(Collider other)
@@ -20,6 +21,7 @@ public class MoveFloor : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             _animator.SetBool("isTrigger", false);
+            other.transform.SetParent(null);
         }
     }
     private void CacheComponents()

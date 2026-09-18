@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -18,7 +19,9 @@ public class PlayerController : MonoBehaviour, IInteractor
     private PlayerMovement _movement;
     private Transform _cameraTransform;
     private PlayerUIController _playerUI;
-    private float _grenadeTime;    
+    private float _grenadeTime;
+
+    public event Action RefreshMagazineUI;
 
     private IInteractable _targetInteractable;
     private IDamageable _targetDamageable;
@@ -106,8 +109,9 @@ public class PlayerController : MonoBehaviour, IInteractor
         _grenadeShape.SetActive(false);
         GrenadeController grenade = Instantiate(_grenadePrefab, _grenadeSpawn.position, _grenadeSpawn.rotation);
         grenade.SetGrenade(_grenadeTime, _grenadeSpawn);
-
-        _playerState._grenadeNum--;        
+        
+        _playerState._grenadeNum--;
+        RefreshMagazineUI?.Invoke();
         _grenadeTime = 1f;
     }
 
@@ -117,7 +121,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         _grenadeTime += Time.deltaTime;
     }
     private void CacheComponents()
-    {
+    {        
         _playerState = GetComponent<PlayerState>();
         _movement = GetComponent<PlayerMovement>();
         _weapon = GetComponentInChildren<PlayerWeapon>();
@@ -203,7 +207,7 @@ public class PlayerController : MonoBehaviour, IInteractor
     }      
     public void TryInteract()
     {
-        if(!_hasDetectDamageable)
+        if(!_hasDetectInteractable)
         {
             return;
         }
@@ -212,7 +216,7 @@ public class PlayerController : MonoBehaviour, IInteractor
         _targetInteractable = null;
     }
     private void OnDestroy()
-    {
+    {        
         _gameoverUI.gameObject.SetActive(true);
         FreeCursor();
     }

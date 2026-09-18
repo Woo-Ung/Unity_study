@@ -19,7 +19,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     }
 
     public static void LoadGameScene()
-    {
+    {        
         SceneManager.LoadScene(1);
     }
 

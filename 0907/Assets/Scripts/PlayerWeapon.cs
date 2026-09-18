@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro.EditorUtilities;
 using UnityEditor;
 using UnityEngine;
+using System;
 
 public class PlayerWeapon : MonoBehaviour
 {  
@@ -14,6 +15,8 @@ public class PlayerWeapon : MonoBehaviour
     private Transform _cameraTransform;
     public int CurrentMagazine => _currentMagazine;
     public int MaxMagzine => MAX_MAGAZINE;
+
+    public event Action RefreshMagazineUI;
 
     private const int MAX_MAGAZINE = 30;
 
@@ -44,7 +47,8 @@ public class PlayerWeapon : MonoBehaviour
         }
         
         _currentMagazine--;
-        
+        RefreshMagazineUI?.Invoke();
+
         StartCoroutine(UpdateCurrentCooldown());
         PlayFlameEffect();
 
