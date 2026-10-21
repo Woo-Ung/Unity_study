@@ -5,7 +5,7 @@ using Action = Unity.Behavior.Action;
 using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Chase", story: "Chase [Target] at [Speed]", category: "Enemy", id: "79f9f51b23950d782c84761f8f5be0bc")]
+[NodeDescription(name: "Chase2", story: "Chase [Target] at [Speed]", category: "Enemy", id: "10f26c3fa2b7fed02d1259103ff94ada")]
 public partial class Chase2Action : Action
 {
     [SerializeReference] public BlackboardVariable<GameObject> Target;
@@ -18,6 +18,14 @@ public partial class Chase2Action : Action
 
     protected override Status OnUpdate()
     {
+        Transform selfTransform = GameObject.transform;
+        Transform targetTransform = Target.Value.transform;
+        Vector3 toTarget = targetTransform.position - selfTransform.position;
+
+        selfTransform.LookAt(targetTransform);
+
+        selfTransform.position += toTarget.normalized * Speed.Value * Time.deltaTime;
+
         return Status.Success;
     }
 
@@ -25,4 +33,3 @@ public partial class Chase2Action : Action
     {
     }
 }
-
