@@ -1,0 +1,6 @@
+id,Name,MaxHP,DetectRange,AttackRange,Speed,AttackValue
+int,string,int,float,float,float,int
+1,Goblin,50,30,20,5.3,5
+2,Slime,20,50,5,2.6,2
+3,Orc,60,20,2,6.2,6
+4,Dragon,100,60,50,9999.9,1
