@@ -8,7 +8,8 @@ public class EnemyTableParser : MonoBehaviour
     [SerializeField] private TextAsset _csvFile;
 
     // 파싱 결과 보관
-    private Dictionary<int, EnemyData> _enemyDatas = new();
+    // private Dictionary<int, EnemyData> _enemyDatas = new();
+    [SerializeField] private List<MonsterStats> _monsterStatsList = new();
 
     private void Awake() => LoadTable();
 
@@ -20,10 +21,10 @@ public class EnemyTableParser : MonoBehaviour
     /// <returns></returns>
 
     // 파실된 결과를 반환
-    public bool TryGetEnemy(int id, out EnemyData data)
-    {
-        return _enemyDatas.TryGetValue(id, out data);
-    }
+    //public bool TryGetEnemy(int id, out EnemyData data)
+    //{
+    //    return _enemyDatas.TryGetValue(id, out data);
+    //}
 
     private void LoadTable()
     {
@@ -64,7 +65,7 @@ public class EnemyTableParser : MonoBehaviour
 
             name = cells[1];
 
-            _enemyDatas[id] = new EnemyData(
+            _monsterStatsList[i - 2].SetData(
                 id,
                 name,
                 maxHp,
@@ -76,7 +77,5 @@ public class EnemyTableParser : MonoBehaviour
 
         }
     }
-
-
 
 }

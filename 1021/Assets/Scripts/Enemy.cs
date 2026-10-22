@@ -2,13 +2,14 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private EnemyTableParser _parser;
+    [SerializeField] private MonsterStats _stats;
     [SerializeField] private int _id;
-    [SerializeField] private EnemyData _data;
 
     private void Start()
     {
-        _parser.TryGetEnemy(_id, out _data);
+        _id = _stats.ID;
+
+        Debug.Log(_id);
     }
 
 
